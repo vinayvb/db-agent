@@ -102,26 +102,6 @@ def validate_matched_tables(matched, all_tables_lower):
     missing = [t for t in matched if t.lower() not in all_tables_lower]
     return missing
 
-
-def extract_used_columns(query):
-    used_cols = re.findall(r'\b\w+\.(\w+)\b', query)
-    bare_cols = re.findall(r'\bselect\s+top\s+\d+\s+([\w,\s*]+?)\s+from', query, re.IGNORECASE)
-    if bare_cols:
-        for cols in bare_cols[0].split(','):
-            col = cols.strip()
-            if '.' in col:
-                used_cols.append(col.split('.')[1].strip())
-            else:
-                used_cols.append(col)
-    return set(col.lower() for col in used_cols)
-
-
-def extract_used_tables(query):
-    from_tables = re.findall(r'\bfrom\s+(\w+)', query, re.IGNORECASE)
-    join_tables = re.findall(r'\bjoin\s+(\w+)', query, re.IGNORECASE)
-    return set(from_tables + join_tables)
-
-
 async def process_user_question(
         user_question, kernel, chat_completion, execution_settings, all_tables, all_tables_lower, mcp_plugin
 ):
@@ -191,27 +171,6 @@ Respond ONLY with JSON: {"query": "..."}
         print(f"⛔ Could not parse final SQL: {e}")
         return
 
-    #used_cols = extract_used_columns(query)
-    #all_cols = [col["column"].lower() for t in schemas.values() for col in t]
-    #bad_cols = [c for c in used_cols if c not in all_cols and c != '*']
-
-    #print(f"✅ Columns used: {used_cols}")
-    #print(f"✅ Known columns: {all_cols}")
-
-    #if bad_cols:
-    #    print(f"⛔ LLM used unknown columns: {bad_cols}")
-    #    return
-
-    #used_tables = extract_used_tables(query)
-    #bad_tables = [t for t in used_tables if t not in all_tables]
-
-    #print(f"✅ Tables used in SQL: {used_tables}")
-    #print(f"✅ Known matched tables: {matched}")
-
-    #if bad_tables:
-    #    print(f"⛔ LLM used unknown tables: {bad_tables}")
-    #    return
-
     print(f"✅ Running SQL: {query}")
     result = await mcp_plugin.run_sql(query)
     print(f"✅ Final result: {result}\n")
@@ -270,9 +229,6 @@ if __name__ == "__main__":
     asyncio.run(main())
 
 #Sample questions
-# Your original commented example questions for easy reference
-# history.add_user_message("What are sample rows in parking data?")
-# history.add_user_message("what is the average base price from parking data you have?")
 # history.add_user_message("What is the total amount each customer has spent?")
 # history.add_user_message("What is the average unit price of items ordered?")
 # history.add_user_message("show me all the orders along with customer name")
@@ -280,7 +236,7 @@ if __name__ == "__main__":
 # history.add_user_message("Determine what items Alice ordered")
 # history.add_user_message("Determine what items Alice Smith ordered")
 # history.add_user_message("List products that have never been ordered")
-# history.add_user_message("Show me customers who ordered more than 1 products in total")
+# history.add_user_message("Show me customers who ordered more than 1 product in total")
 # history.add_user_message("Give me orders that include a product with price > 20")
 # history.add_user_message("Show me top 5 expensive orders")
 # history.add_user_message("Give me all orders with more than 3 items")
