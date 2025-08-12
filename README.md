@@ -3,14 +3,15 @@
 This project provides a Python-based agent that allows you to ask natural language questions about your database schema. It translates your questions into SQL queries, runs them against an MCP server, and returns the results. The agent runs in a loop, allowing multiple queries until you press Ctrl+C to quit.
 
 ---
+## DB Setup Instructions
 
-## Setup Instructions
+## Code Setup Instructions
 
 1. **Clone the repository:**
 
    ```bash
-   git clone <your-repo-url>
-   cd <your-repo-directory>
+   git clone https://github.com/vinayvb/db-agent.git
+   cd db-agent
 
 2. **Create and activate a Python virtual environment named myenv:**
    ```bash
