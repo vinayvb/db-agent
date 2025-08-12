@@ -59,5 +59,5 @@ This project provides a Python-based agent that allows you to ask natural langua
    * Show me customers who ordered more than 1 product in total
    * Give me orders that include a product with price > 20
    * Show me top 5 expensive orders
-   * Give me all orders with more than 3 items
+   * Give me all orders with more than 2 items
    * Show all customers who have ordered a product costing more than $40, and how many such products they ordered
