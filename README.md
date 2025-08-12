@@ -4,6 +4,64 @@ This project provides a Python-based agent that allows you to ask natural langua
 
 ---
 ## DB Setup Instructions
+1. **Define Tables**
+   ```bash
+   CREATE TABLE customers (
+     customer_id INT PRIMARY KEY,
+     first_name VARCHAR(100),
+     last_name VARCHAR(100),
+     email VARCHAR(100),
+     created_at DATETIME
+   );
+ 
+    CREATE TABLE products (
+    product_id        INT PRIMARY KEY,
+    name              VARCHAR(200),
+    description       VARCHAR(500),
+    price             DECIMAL,
+    stock_quantity    INT
+   );
+
+   CREATE TABLE orders (
+     order_id          INT PRIMARY KEY,
+     customer_id       INT,
+     order_date        DATETIME,
+     status            VARCHAR(40)
+   );
+
+   CREATE TABLE order_items (
+     order_item_id     INT PRIMARY KEY,
+     order_id          INT,
+     product_id        INT,
+     quantity          INT,
+     unit_price        DECIMAL
+   );
+
+2. **Insert Sample Data**
+   ```bash
+   INSERT INTO dbo.customers VALUES
+     (1, 'Alice', 'Smith', 'alice@example.com', '2025-07-26'),
+     (2, 'Bob', 'Jones', 'bob@example.com', '2025-07-26'),
+     (3, 'Charlie', 'Brown', 'charlie@example.com', '2025-07-27');
+
+   INSERT INTO dbo.products VALUES
+     (1, 'Widget', 'Basic widget', 19.99, 100),
+     (2, 'Gadget', 'Fancy gadget', 49.99, 50),
+     (3, 'Thingamajig', 'Unused product', 29.99, 10);
+
+   INSERT INTO dbo.orders VALUES
+     (1, 1, '2025-07-26', 'Shipped'),
+     (2, 2, '2025-07-26', 'Processing'),
+     (3, 3, '2025-07-27', 'Processing'),
+     (4, 2, '2025-07-27', 'Shipped');
+
+   INSERT INTO dbo.order_items VALUES
+     (1, 1, 1, 2, 19.99),
+     (2, 1, 2, 1, 49.99),
+     (3, 2, 1, 1, 19.99),
+     (4, 3, 1, 1, 19.99),
+     (5, 3, 2, 1, 49.99),
+     (6, 4, 2, 2, 49.99);
 
 ## Code Setup Instructions
 
@@ -38,7 +96,7 @@ This project provides a Python-based agent that allows you to ask natural langua
 
 6. **Run the MCP server first, so the agent can connect to it**
    ```bash
-   python sk_mcp_server.py
+   python mcp_server.py
 
 7. **Run the Python agent script:**
    ```bash
