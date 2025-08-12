@@ -47,3 +47,17 @@ This project provides a Python-based agent that allows you to ask natural langua
 8. **Interact with the agent:**
    * Type your natural language question and press enter
    * To quit, press Cntrl+C
+
+9. **Try the following sample questions**
+   * What is the total amount each customer has spent
+   * What is the average unit price of items ordered
+   * show me all the orders along with customer name
+   * list all products in order id 1
+   * Determine what items Alice ordered
+   * Determine what items Alice Smith ordered
+   * List products that have never been ordered
+   * Show me customers who ordered more than 1 product in total
+   * Give me orders that include a product with price > 20
+   * Show me top 5 expensive orders
+   * Give me all orders with more than 3 items
+   * Show all customers who have ordered a product costing more than $40, and how many such products they ordered

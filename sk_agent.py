@@ -227,17 +227,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-#Sample questions
-# history.add_user_message("What is the total amount each customer has spent?")
-# history.add_user_message("What is the average unit price of items ordered?")
-# history.add_user_message("show me all the orders along with customer name")
-# history.add_user_message("list all products in order id 1")
-# history.add_user_message("Determine what items Alice ordered")
-# history.add_user_message("Determine what items Alice Smith ordered")
-# history.add_user_message("List products that have never been ordered")
-# history.add_user_message("Show me customers who ordered more than 1 product in total")
-# history.add_user_message("Give me orders that include a product with price > 20")
-# history.add_user_message("Show me top 5 expensive orders")
-# history.add_user_message("Give me all orders with more than 3 items")
-# history.add_user_message("Show all customers who have ordered a product costing more than $40, and how many such products they ordered")
