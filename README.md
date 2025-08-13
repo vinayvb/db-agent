@@ -80,7 +80,13 @@ This project provides a Python-based agent that allows you to ask natural langua
    ```bash
    pip install -r requirements.txt
 
-4. **Create a .env file in the root directory with the following variables 
+4. **Spin up a GPT-4o LLM**
+   - Spin up Azure OpenAI Service
+   - Go to Azure AI Foundry and search for gpt-4o
+   - Deploy gpt-4o and note down the API key and endpoint
+
+
+5. **Create a .env file in the root directory with the following variables 
    and put in the right values by replacing the placeholders:**
    ```bash
    HOST=your_db_host
@@ -91,31 +97,33 @@ This project provides a Python-based agent that allows you to ask natural langua
    AZURE_OPENAI_ENDPOINT=https://your_openai_endpoint_here
    MCP_SERVER_URL=http://localhost:8080/mcp
    
-5. **Since the database is Serverless, it may be paused, 
+6. **Since the database is Serverless, it may be paused, 
    so start the database by logging into the Query Editor in the Portal**
 
-6. **Run the MCP server first, so the agent can connect to it**
+
+7. **Run the MCP server first, so the agent can connect to it**
    ```bash
    python mcp_server.py
 
-7. **Run the Python agent script:**
+8. **Run the Python agent script:**
    ```bash
    python sk_agent.py
    
-8. **Interact with the agent:**
+9. **Interact with the agent:**
    * Type your natural language question and press enter
    * To quit, press Cntrl+C
+   
 
-9. **Try the following sample questions**
-   * What is the total amount each customer has spent
-   * What is the average unit price of items ordered
-   * show me all the orders along with customer name
-   * list all products in order id 1
-   * Determine what items Alice ordered
-   * Determine what items Alice Smith ordered
-   * List products that have never been ordered
-   * Show me customers who ordered more than 1 product in total
-   * Give me orders that include a product with price > 20
-   * Show me top 5 expensive orders
-   * Give me all orders with more than 2 items
-   * Show all customers who have ordered a product costing more than $40, and how many such products they ordered
+10. **Try the following sample questions**
+    * What is the total amount each customer has spent
+    * What is the average unit price of items ordered
+    * show me all the orders along with customer name
+    * list all products in order id 1
+    * Determine what items Alice ordered
+    * Determine what items Alice Smith ordered
+    * List products that have never been ordered
+    * Show me customers who ordered more than 1 product in total
+    * Give me orders that include a product with price > 20
+    * Show me top 5 expensive orders
+    * Give me all orders with more than 2 items
+    * Show all customers who have ordered a product costing more than $40, and how many such products they ordered
