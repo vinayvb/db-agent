@@ -89,12 +89,14 @@ This project provides a Python-based agent that allows you to ask natural langua
 5. **Create a .env file in the root directory with the following variables 
    and put in the right values by replacing the placeholders:**
    ```bash
-   HOST=your_db_host
+   HOST=your_db_host.database.windows.net
    DATABASE=your_db_name
-   APP_USER=your_db_user
+   APP_USER=your_db_user@your_db_host
    APP_PASSWORD=your_db_password
    AZURE_OPENAI_API_KEY=your_api_key
    AZURE_OPENAI_ENDPOINT=https://your_openai_endpoint_here
+   AZURE_OPENAI_DEPLOYMENT=gpt-4o
+   MCP_TRANSPORT=http
    MCP_SERVER_URL=http://localhost:8080/mcp
    
 6. **Since the database is Serverless, it may be paused, 
@@ -123,7 +125,7 @@ This project provides a Python-based agent that allows you to ask natural langua
     * Determine what items Alice Smith ordered
     * List products that have never been ordered
     * Show me customers who ordered more than 1 product in total
-    * Give me orders that include a product with price > 20
+    * Give me orders that include a product with price greater than 20
     * Show me top 5 expensive orders
     * Give me all orders with more than 2 items
     * Show all customers who have ordered a product costing more than $40, and how many such products they ordered

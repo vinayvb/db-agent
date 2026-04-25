@@ -4,10 +4,10 @@ import asyncio
 import json
 import pyodbc
 from dotenv import load_dotenv
-from fastmcp import FastMCP, Context, tools
+from fastmcp import FastMCP
 
 load_dotenv()
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 def get_connection():
@@ -25,82 +25,82 @@ def get_connection():
     )
     return pyodbc.connect(conn_str)
 
-mcp = FastMCP(
-    name="SQL Tools to query an Azure SQL database",
-    instructions="""
-    This server provides SQL access tools.
-
-    Use:
-    - list_tables: to get available tables
-    - list_columns: to view columns in a table
-    - run_sql: to run a SELECT SQL query
-    - table_not_found: to return a message when a table isnt found that matches user input
-    """
-)
+mcp = FastMCP(name="SQL Database Agent MCP Server")
 
 @mcp.tool()
 def list_tables() -> dict:
+    """List all available tables in the database"""
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'")
-        results = [{"schema": row.TABLE_SCHEMA, "table": row.TABLE_NAME} for row in cursor.fetchall()]
+        cursor.execute(
+            "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES "
+            "WHERE TABLE_TYPE = 'BASE TABLE' ORDER BY TABLE_SCHEMA, TABLE_NAME"
+        )
+        tables = [{"schema": row.TABLE_SCHEMA, "table": row.TABLE_NAME} for row in cursor.fetchall()]
         cursor.close()
         conn.close()
-        logger.debug(f"Tables: {results}")
-        # Wrap in expected format:
-        return {"tool_result": "list_tables", "output": results}
+        logger.info(f"Listed {len(tables)} tables")
+        return {"tables": tables}
     except Exception as e:
         logger.error(f"Error in list_tables: {e}")
-        raise
+        return {"error": str(e)}
 
 @mcp.tool()
 def list_columns(table: str) -> dict:
+    """Get all columns for a specific table"""
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?", table)
-        results = [{"column": row.COLUMN_NAME, "type": row.DATA_TYPE} for row in cursor.fetchall()]
+        cursor.execute(
+            "SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE "
+            "FROM INFORMATION_SCHEMA.COLUMNS "
+            "WHERE TABLE_NAME = ? "
+            "ORDER BY ORDINAL_POSITION",
+            table
+        )
+        columns = [
+            {"column": row.COLUMN_NAME, "type": row.DATA_TYPE, "nullable": row.IS_NULLABLE}
+            for row in cursor.fetchall()
+        ]
         cursor.close()
         conn.close()
-        logger.debug(f"Columns for table {table}: {results}")
-        return {"tool_result": "list_columns", "output": results}
+        logger.info(f"Listed {len(columns)} columns for table {table}")
+        return {"table": table, "columns": columns}
     except Exception as e:
         logger.error(f"Error in list_columns: {e}")
-        raise
+        return {"error": str(e)}
 
 @mcp.tool()
 def run_sql(query: str) -> dict:
-    logger.info("IN RUN_SQL TOOL")
+    """Execute a SELECT SQL query and return results"""
     try:
         if not query.strip().lower().startswith("select"):
-            raise ValueError("Only SELECT queries are allowed.")
+            return {"error": "Only SELECT queries are allowed"}
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(query)
-        columns = [col[0] for col in cursor.description]
+        columns = [col[0] for col in cursor.description] if cursor.description else []
         rows = cursor.fetchall()
         results = [dict(zip(columns, row)) for row in rows]
         cursor.close()
         conn.close()
-        logger.debug(f"Query: {query} | Result: {results}")
-        # Return JSON string wrapped in dict
-        return {"tool_result": "run_sql", "output": results}
+        logger.info(f"Executed query, returned {len(results)} rows")
+        return {"rows": results, "count": len(results)}
     except Exception as e:
         logger.error(f"Error in run_sql: {e}")
-        raise
+        return {"error": str(e)}
 
 @mcp.tool()
 def table_not_found(table: str) -> dict:
-    return {
-        "tool_result": "table_not_found",
-        "output": f"Error: Table '{table}' not found in the database."
-    }
+    """Return an error message when a table is not found"""
+    return {"error": f"Table '{table}' not found in the database"}
 
 if __name__ == "__main__":
     host = os.environ.get("MCP_HOST", "0.0.0.0")
     port = int(os.environ.get("MCP_PORT", "8080"))
-    transport = os.environ.get("MCP_TRANSPORT", "streamable-http")
+    transport = os.environ.get("MCP_TRANSPORT", "stdio")
 
-    print(f"Starting server with transport={transport}, host={host}, port={port}")
+    print(f"🚀 Starting MCP Server")
+    print(f"📡 Transport: {transport}, Host: {host}, Port: {port}")
     mcp.run(transport=transport, host=host, port=port)
