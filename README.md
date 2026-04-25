@@ -105,11 +105,11 @@ This project provides a Python-based agent that allows you to ask natural langua
 
 7. **Run the MCP server first, so the agent can connect to it**
    ```bash
-   python mcp_server.py
+   python3 mcp_server.py
 
 8. **Run the Python agent script:**
    ```bash
-   python sk_agent.py
+   python3 langchain_agent.py
    
 9. **Interact with the agent:**
    * Type your natural language question and press enter
