@@ -95,8 +95,8 @@ This project provides a Python-based agent that allows you to ask natural langua
    APP_PASSWORD=your_db_password
    AZURE_OPENAI_API_KEY=your_api_key
    AZURE_OPENAI_ENDPOINT=https://your_openai_endpoint_here
-   AZURE_OPENAI_DEPLOYMENT=gpt-4o
-   MCP_TRANSPORT=http
+   AZURE_OPENAI_DEPLOYMENT=your_deployment_name
+   MCP_TRANSPORT=streamable-http
    MCP_SERVER_URL=http://localhost:8080/mcp
    
 6. **Since the database is Serverless, it may be paused, 

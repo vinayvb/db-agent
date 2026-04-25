@@ -246,19 +246,18 @@ async def run_stage3_query_execution(user_question: str, schemas_str: str) -> st
     tools = [run_sql]
     llm_with_tools = llm.bind_tools(tools)
     
-    system_prompt = """You are a SQL expert. Your job is to:
-1. Based on the user's question and the provided schemas, construct an accurate SQL SELECT query
-2. Only use tables and columns that actually exist in the provided schema
-3. Use TOP N syntax when appropriate
-4. Call run_sql() with the query
-5. Return the results in a clear, readable format
+    system_prompt = """You help answer database questions using SQL Server.
 
-Important rules:
-- ALWAYS match column names exactly to the schema provided
-- Do NOT guess or assume column names
-- Use proper SQL Server syntax
-- Allow sql query logging for debugging
-- Only SELECT queries allowed"""
+Use the provided schema as the source of truth for table and column names.
+
+SQL generation guidance:
+- Prefer exact table and column names from the schema.
+- If the needed table or column is not present, explain that the schema does not contain enough information.
+- Generate a SELECT query when the question can be answered from the schema.
+- Use SQL Server syntax.
+- Use TOP N syntax when the user asks for a limited number of rows.
+- Call the run_sql tool with the generated query.
+- Present the result in clear, readable language."""
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -269,7 +268,7 @@ Important rules:
 
 User question: {user_question}
 
-Generate the appropriate SQL query and execute it."""
+Create and run a SQL query if the schema contains the needed fields."""
         },
     ]
     
@@ -285,9 +284,8 @@ Generate the appropriate SQL query and execute it."""
                 
                 if tool_name == 'run_sql':
                     query = tool_input.get('query', '')
-
-                    #print("\n🧠 Generated SQL:")
-                    #print(query)
+                    print("\n Generated SQL:")
+                    print(query)
                     result = await call_mcp_tool("run_sql", {"query": tool_input.get('query', '')})
                 else:
                     result = f"Unknown tool: {tool_name}"
